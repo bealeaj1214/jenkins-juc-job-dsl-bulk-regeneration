@@ -1,0 +1,56 @@
+job {
+    name "gradle-gerrit-job-generator"
+
+    parameters {
+        stringParam("PROJECT_NAME","sample/java/library")
+    }
+
+    steps {
+        dsl {
+            removeAction('IGNORE')
+            ignoreExisting(false)
+            text('''
+import jobdsl.JobUtilities
+import javaposse.jobdsl.dsl.Job
+
+def gerritProjectName= "${PROJECT_NAME}"
+
+
+def simpleJavaVerifyJob = job {}
+
+JobUtilities.setupGradleGerritJobName(
+    simpleJavaVerifyJob,
+    gerritProjectName)
+
+JobUtilities.setGerritScm(
+    simpleJavaVerifyJob,
+    gerritProjectName)
+
+JobUtilities.setGerritTrigger(
+    simpleJavaVerifyJob,
+    gerritProjectName)
+
+JobUtilities.setupGradleBuild(simpleJavaVerifyJob)
+
+
+
+''')
+
+        }
+    }
+    configure { project ->
+
+     def managedFiles = project/buildWrappers/'org.jenkinsci.plugins.configfiles.buildwrapper.ConfigFileBuildWrapper'/managedFiles
+
+     managedFiles <<'org.jenkinsci.plugins.configfiles.buildwrapper.ManagedFile' {
+
+         // Need to lookup
+         fileId 'org.jenkinsci.plugins.configfiles.groovy.GroovyScript1412539561771'
+         targetLocation 'jobdsl/JobUtilities.groovy'
+         variable('')
+
+     }
+
+
+ }
+}

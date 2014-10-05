@@ -1,0 +1,51 @@
+
+def buildChooserAttrs = [
+    class: 'com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.GerritTriggerBuildChooser'
+]
+
+job {
+
+    name "git-gradle-build-with-gerrit-trigger"
+
+    scm {
+        git(
+            '/Users/alanbeale/sandbox/samples/java/basic',
+            '$GERRIT_BRANCH'
+        ){ node ->
+            node/extensions {
+                'hudson.plugins.git.extensions.impl.BuildChooserSetting'{
+                    buildChooser(buildChooserAttrs){
+                        separator('#')
+                    }
+                }
+            }
+
+            def remoteConfig = node/userRemoteConfigs/'hudson.plugins.git.UserRemoteConfig'
+            remoteConfig << refspec('$GERRIT_REFSPEC')
+        }
+
+    }
+
+    triggers {
+        gerrit {
+            events {
+                PatchsetCreated
+                DraftPublished
+            }
+            project(
+                "plain: /Users/alanbeale/sandbox/samples/java/basic",
+                'ant:**'
+            )
+        }
+    }
+
+    steps {
+        gradle (
+            "build",
+            null,
+            true
+        ){ node -> //hudson.plugins.gradle.Gradle
+            node/useWorkspaceAsHome(true)
+        }
+    }
+}

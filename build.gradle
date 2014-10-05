@@ -20,6 +20,8 @@ dependencies {
 ext {
     exampleJobDSLDir= file("${projectDir}/src/examples/jobdsl")
     exampleJobDSLFiles=fileTree(dir:exampleJobDSLDir , include: '*.jobDSL')
+    generatorJobDSLDir= file("${projectDir}/src/generator/jobdsl")
+    generatorJobDSLFiles=fileTree(dir:generatorJobDSLDir , include: '*.jobDSL')
 
 }
 
@@ -36,8 +38,34 @@ task setupExamples {
 task buildExamplesCompile(type: JavaExec){
     dependsOn setupExamples
     workingDir setupExamples.targetDir
+    group= 'job-dsl-compile'
 
-classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
     main ='javaposse.jobdsl.Run'
     args = exampleJobDSLFiles.collect { it.absolutePath }
+}
+
+task setupGenerator {
+    ext {
+        targetDir = file("${buildDir}/generator")
+    }
+
+    doLast {
+        targetDir.mkdirs()
+    }
+}
+
+task buildGeneratorCompile(type: JavaExec){
+    dependsOn setupGenerator
+    workingDir setupGenerator.targetDir
+    group= 'job-dsl-compile'
+
+    classpath = sourceSets.main.runtimeClasspath
+    main ='javaposse.jobdsl.Run'
+    args = generatorJobDSLFiles.collect { it.absolutePath }
+}
+
+task buildJobDSLs{
+    group 'utility'
+    dependsOn buildGeneratorCompile , buildExamplesCompile
 }
