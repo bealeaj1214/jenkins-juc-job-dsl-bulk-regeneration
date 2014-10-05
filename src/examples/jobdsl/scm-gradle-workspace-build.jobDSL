@@ -1,0 +1,22 @@
+job {
+
+    name "git-gradle-build-with-worspace-option"
+
+    scm {
+        git(
+            '/Users/alanbeale/sandbox/samples/java/basic',
+            '*/master'
+        )
+
+    }
+
+    steps {
+        gradle (
+            "build",
+            null,
+            true
+        ){ node -> //hudson.plugins.gradle.Gradle
+            node/useWorkspaceAsHome(true)
+        }
+    }
+}

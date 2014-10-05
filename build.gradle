@@ -1,0 +1,43 @@
+
+
+// Apply the java plugin to add support for Java
+apply plugin: 'groovy'
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    maven {  url 'http://repo.jenkins-ci.org/releases/'}
+    jcenter()
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    compile 'org.jenkins-ci.plugins:job-dsl-core:1.26'
+    compile  'org.jenkins-ci.main:jenkins-core:1.583'
+    compile 'javax.servlet:servlet-api:2.5'
+
+}
+
+ext {
+    exampleJobDSLDir= file("${projectDir}/src/examples/jobdsl")
+    exampleJobDSLFiles=fileTree(dir:exampleJobDSLDir , include: '*.jobDSL')
+
+}
+
+task setupExamples {
+    ext {
+        targetDir = file("${buildDir}/examples")
+    }
+
+    doLast {
+        targetDir.mkdirs()
+    }
+}
+
+task buildExamplesCompile(type: JavaExec){
+    dependsOn setupExamples
+    workingDir setupExamples.targetDir
+
+classpath = sourceSets.main.runtimeClasspath
+    main ='javaposse.jobdsl.Run'
+    args = exampleJobDSLFiles.collect { it.absolutePath }
+}
