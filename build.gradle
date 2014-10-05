@@ -9,6 +9,8 @@ repositories {
     jcenter()
 }
 
+
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile 'org.jenkins-ci.plugins:job-dsl-core:1.26'
@@ -16,6 +18,19 @@ dependencies {
     compile 'javax.servlet:servlet-api:2.5'
 
 }
+
+sourceSets{
+    console {
+        groovy {
+            compileClasspath += main.compileClasspath
+        }
+    }
+}
+
+ configurations {
+     consoleCompile.extendsFrom mainCompile
+     consoleRuntime.extendsFrom mainRuntime
+ }
 
 ext {
     exampleJobDSLDir= file("${projectDir}/src/examples/jobdsl")
