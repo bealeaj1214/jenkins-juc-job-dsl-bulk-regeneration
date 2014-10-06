@@ -21,7 +21,7 @@ public class JobUtilities {
         class: 'com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.GerritTriggerBuildChooser'
     ]
 
-    static def setGerritScm(
+    static def setupGerritScm(
         Job job,
         String projectName,
         baseGerritURL='ssh://jenkins@gerritServer:29418'){
@@ -51,7 +51,7 @@ public class JobUtilities {
 
     }
 
-    static def setGerritTrigger(
+    static def setupGerritTrigger(
         Job job,
         String projectName){
 

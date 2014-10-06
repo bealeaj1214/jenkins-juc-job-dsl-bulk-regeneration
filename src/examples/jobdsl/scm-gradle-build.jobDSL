@@ -1,20 +1,10 @@
 job {
-
     name "git-gradle-simple-build"
-
     scm {
-        git(
-            '/Users/alanbeale/sandbox/samples/java/basic',
-            '*/master'
-        )
-
+        git('/Users/alanbeale/sandbox/samples/java/basic',
+            '*/master'  )
     }
-
     steps {
-        gradle (
-            "build",
-            null,
-            true
-        )
+        gradle ( "build", null, true )
     }
 }

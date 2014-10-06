@@ -1,6 +1,8 @@
 
 def buildChooserAttrs = [
-    class: 'com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.GerritTriggerBuildChooser'
+    class: 'com.sonyericsson.hudson.plugins.'+
+           'gerrit.trigger.hudsontrigger.'+
+           'GerritTriggerBuildChooser'
 ]
 
 job {
@@ -19,13 +21,12 @@ job {
                     }
                 }
             }
-
-            def remoteConfig = node/userRemoteConfigs/'hudson.plugins.git.UserRemoteConfig'
+            def remoteConfig = node/userRemoteConfigs/
+            'hudson.plugins.git.UserRemoteConfig'
             remoteConfig << refspec('$GERRIT_REFSPEC')
         }
 
     }
-
     triggers {
         gerrit {
             events {
@@ -38,13 +39,9 @@ job {
             )
         }
     }
-
     steps {
-        gradle (
-            "build",
-            null,
-            true
-        ){ node -> //hudson.plugins.gradle.Gradle
+        gradle ("build", null, true)
+        { node -> //hudson.plugins.gradle.Gradle
             node/useWorkspaceAsHome(true)
         }
     }

@@ -12,35 +12,20 @@ job {
             text('''
 import jobdsl.JobUtilities
 import javaposse.jobdsl.dsl.Job
-
 def gerritProjectName= "${PROJECT_NAME}"
-
-
 def simpleJavaVerifyJob = job {}
-
-JobUtilities.setupGradleGerritJobName(
-    simpleJavaVerifyJob,
-    gerritProjectName)
-
-JobUtilities.setGerritScm(
-    simpleJavaVerifyJob,
-    gerritProjectName)
-
-JobUtilities.setGerritTrigger(
-    simpleJavaVerifyJob,
-    gerritProjectName)
-
+JobUtilities.setupGradleGerritJobName(simpleJavaVerifyJob, gerritProjectName)
+JobUtilities.setupGerritScm( simpleJavaVerifyJob, gerritProjectName)
+JobUtilities.setupGerritTrigger( simpleJavaVerifyJob, gerritProjectName)
 JobUtilities.setupGradleBuild(simpleJavaVerifyJob)
-
-
-
 ''')
-
         }
     }
     configure { project ->
 
-     def managedFiles = project/buildWrappers/'org.jenkinsci.plugins.configfiles.buildwrapper.ConfigFileBuildWrapper'/managedFiles
+     def managedFiles = project/buildWrappers/
+     'org.jenkinsci.plugins.configfiles.buildwrapper.ConfigFileBuildWrapper'/
+     managedFiles
 
      managedFiles <<'org.jenkinsci.plugins.configfiles.buildwrapper.ManagedFile' {
 
