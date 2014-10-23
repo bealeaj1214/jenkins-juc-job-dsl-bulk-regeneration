@@ -1,0 +1,41 @@
+job {
+
+    name "regenerate-gerrit-jobs-from-names"
+
+    steps {
+
+        systemGroovyCommand('''
+import jenkins.model.*
+
+import hudson.model.*
+
+def jenkins = jenkins.model.Jenkins.instance
+def jobGeneratorName="gradle-gerrit-job-generator"
+def jobGenerator = jenkins.getItem(jobGeneratorName)
+def projectParamName ="PROJECT_NAME"
+def jobs = jenkins.getItems()
+
+def gerritJobs = jobs.findAll { job ->
+ job.name.endsWith("gradle-gerrit")
+}
+
+def projectNames =gerritJobs.collect {  item ->
+    item.triggers.values().find {
+        it.class.simpleName =="GerritTrigger"
+    }. gerritProjects[0].pattern
+}
+
+if(jobGenerator){
+    projectNames.each {  projectName ->
+        boolean buildQueued =
+            jobGenerator.scheduleBuild( 5,
+                new Cause.UserIdCause(),
+                new ParametersAction(
+                    new StringParameterValue( projectParamName,projectName)
+                )
+            )
+    }
+}
+''')
+    }
+}

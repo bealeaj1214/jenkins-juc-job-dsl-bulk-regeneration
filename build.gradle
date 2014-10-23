@@ -37,7 +37,8 @@ ext {
     exampleJobDSLFiles=fileTree(dir:exampleJobDSLDir , include: '*.jobDSL')
     generatorJobDSLDir= file("${projectDir}/src/generator/jobdsl")
     generatorJobDSLFiles=fileTree(dir:generatorJobDSLDir , include: '*.jobDSL')
-
+    regenerateJobDSLDir= file("${projectDir}/src/regenerate/jobdsl")
+    regenerateJobDSLFiles=fileTree(dir:regenerateJobDSLDir , include: '*.jobDSL')
 }
 
 task setupExamples {
@@ -70,6 +71,17 @@ task setupGenerator {
     }
 }
 
+
+task setupRegenerate {
+    ext {
+        targetDir = file("${buildDir}/regenerate")
+    }
+
+    doLast {
+        targetDir.mkdirs()
+    }
+}
+
 task buildGeneratorCompile(type: JavaExec){
     dependsOn setupGenerator
     workingDir setupGenerator.targetDir
@@ -80,7 +92,20 @@ task buildGeneratorCompile(type: JavaExec){
     args = generatorJobDSLFiles.collect { it.absolutePath }
 }
 
+
+task buildRegenerateCompile(type: JavaExec){
+    dependsOn setupRegenerate
+    workingDir setupRegenerate.targetDir
+    group= 'job-dsl-compile'
+
+    classpath = sourceSets.main.runtimeClasspath
+    main ='javaposse.jobdsl.Run'
+    args = regenerateJobDSLFiles.collect { it.absolutePath }
+}
+
 task buildJobDSLs{
     group 'utility'
-    dependsOn buildGeneratorCompile , buildExamplesCompile
+    dependsOn buildGeneratorCompile , buildExamplesCompile, buildRegenerateCompile
 }
+
+assemble.dependsOn buildJobDSLs
