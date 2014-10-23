@@ -24,7 +24,7 @@ if(jobGenerator){
             jobGenerator.scheduleBuild( 5,
                 new Cause.UserIdCause(),
                 new ParametersAction(
-                    new StringParameterValue( projectParamName,projectName)
+                    new StringParameterValue( projectParamName,projectName.trim()))
                 )
             )
     }

@@ -6,17 +6,6 @@ import javaposse.jobdsl.dsl.Job
 public class JobUtilities {
 
 
-    static def setupGradleGerritJobName(Job job,String projectName){
-
-        def matcher = projectName =~/[\/]+/
-        def jobName = "${matcher.replaceAll('-')}-gradle-gerrit"
-
-        job.with {
-            name "${jobName}"
-        }
-
-    }
-
     static def buildChooserAttrs = [
         class: 'com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.GerritTriggerBuildChooser'
     ]
@@ -88,4 +77,17 @@ public class JobUtilities {
             }
         }
     }
+
+
+    static def setupGradleGerritJobName(Job job,String projectName){
+
+        def matcher = projectName =~/[\/]+/
+        def jobName = "${matcher.replaceAll('-')}-gradle-gerrit"
+
+        job.with {
+            name "${jobName}"
+        }
+
+    }
+
 }
