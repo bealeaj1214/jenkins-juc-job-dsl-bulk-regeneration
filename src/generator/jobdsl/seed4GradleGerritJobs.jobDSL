@@ -29,7 +29,12 @@ JobUtilities.setupGradleBuild(simpleJavaVerifyJob)
 
      managedFiles <<'org.jenkinsci.plugins.configfiles.buildwrapper.ManagedFile' {
 
-         // Need to lookup
+         /*
+          * fileId value for config file provider groovy script varies
+          * with jenkin instance.  This value needs to be looked up
+          * after it the JobUtilities.groovy file in added as a groovy
+          * file.
+          */
          fileId 'org.jenkinsci.plugins.configfiles.groovy.GroovyScript1412539561771'
          targetLocation 'jobdsl/JobUtilities.groovy'
          variable('')
